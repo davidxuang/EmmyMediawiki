@@ -62,6 +62,9 @@ local lang
 ---@return string lang The language code for this language object.
 function lang:getCode () end
 
+---@return string lang Returns the standard [BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language code for this language object. This is the code string which is appropriate to use in HTML, for example as the value of a lang attribute.
+function lang:toBcp47Code () end
+
 ---@return string[] list A list of MediaWiki's fallback language codes for this language object. Equivalent to `mw.language.getFallbacksFor( lang:getCode()` ).
 function lang:getFallbackLanguages () end
 

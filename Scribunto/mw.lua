@@ -1,7 +1,8 @@
 ---@meta
 
 ---[Documentaion](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#Scribunto_libraries)
-mw = { getContentLanguage = mw.language.getContentLanguage,
+mw = {
+    getContentLanguage = mw.language.getContentLanguage,
     getLanguage = mw.language.new,
 
     ---Adds a warning which is displayed above the preview when previewing an edit. `text` is parsed as wikitext.
@@ -77,7 +78,7 @@ local frame = {
     ---
     ---For performance reasons, frame.args uses a metatable, rather than directly containing the arguments. Argument values are requested from MediaWiki on demand. This means that most other table methods will not work correctly, including `#frame.args`, `next( frame.args )`, and the functions in the Table library.
     ---
-    ---If preprocessor syntax such as template invocations and triple-brace arguments are included within an argument to #invoke, they will not be expanded, after being passed to Lua, until their values are being requested in Lua. If certain special tags written in XML notation, such as `<pre>`, `<nowiki>`, `<gallery>` and `<ref>`, are included as arguments to #invoke, then these tags will be converted to "[strip markers](https://www.mediawiki.org/wiki/Strip_marker)" — special strings which begin with a delete character (ASCII 127), to be replaced with HTML after they are returned from #invoke.
+    ---If preprocessor syntax such as template invocations and triple-brace arguments are included within an argument to `#invoke`, they will not be expanded, after being passed to Lua, until their values are being requested in Lua. If certain special tags written in XML notation, such as `<pre>`, `<nowiki>`, `<gallery>` and `<ref>`, are included as arguments to #invoke, then these tags will be converted to "[strip markers](https://www.mediawiki.org/wiki/Strip_marker)" — special strings which begin with a delete character (ASCII 127), to be replaced with HTML after they are returned from #invoke.
     ---@type { [integer|string]: string }
     args = {}
 }
@@ -87,28 +88,32 @@ local frame = {
 ---The following calls are approximately equivalent to the indicated wikitext:
 ---```lua
 ---    -- {{ns:0}}
----    frame:callParserFunction{ name = 'ns', args = 0 }
+---    frame:callParserFunction( 'ns', { 0 } )
+---    frame:callParserFunction( 'ns', 0 )
+---    frame:callParserFunction{ name = 'ns', args = { 0 } }
 ---
 ---    -- {{#tag:nowiki|some text}}
----    frame:callParserFunction{ name = '#tag', args = { 'nowiki', 'some text' } }
 ---    frame:callParserFunction( '#tag', { 'nowiki', 'some text' } )
 ---    frame:callParserFunction( '#tag', 'nowiki', 'some text' )
 ---    frame:callParserFunction( '#tag:nowiki', 'some text' )
+---    frame:callParserFunction{ name = '#tag', args = { 'nowiki', 'some text' } }
 ---
 ---    -- {{#tag:ref|some text|name=foo|group=bar}}
----    frame:callParserFunction{ name = '#tag:ref', args = {
+---    frame:callParserFunction( '#tag', { 'ref',
 ---            'some text', name = 'foo', group = 'bar'
 ---    } }
 ---```
 ---
 ---Note that, as with `frame:expandTemplate()`, the function name and arguments are not preprocessed before being passed to the parser function.
 ---@param name string
----@param args table?
+---@param args { [string]: string }?
 ---@return string
 ---@overload fun(frame: frame, name: string, ...: string): string
----@overload fun(frame: frame, _: { name: string, args: table }): string
+---@overload fun(frame: frame, _: { name: string, args: { [string]: string } }): string
 function frame:callParserFunction ( name, args ) end
 
+---This is equivalent to a call to `frame:callParserFunction()` with function name `'msg'` (see [Help:Magic words#Transclusion modifiers](https://www.mediawiki.org/wiki/Help:Magic_words#Transclusion_modifiers)) and with `title` prepended to `args`.
+---
 ---This is transclusion. The call
 ---```lua
 ---    frame:expandTemplate{ title = 'template', args = { 'arg1', 'arg2', name = 'arg3' } }
@@ -123,31 +128,31 @@ function frame:callParserFunction ( name, args ) end
 ---    -- This is roughly equivalent to wikitext like {{template|{{((}}!{{))}}}}
 ---    frame:expandTemplate{ title = 'template', args = { '{{!}}' } }
 ---```
----@param _ { title: string, args: table }
+---@param _ { title: string, args: { [string]: string } }
 ---@return string
 function frame:expandTemplate ( _ ) end
 
---- This is equivalent to a call to `frame:callParserFunction()` with function name `'#tag:' .. name` and with `content` prepended to `args`.
+--- This is equivalent to a call to `frame:callParserFunction()` with function name `'#tag'` (see [Help:Magic words#Miscellaneous](https://www.mediawiki.org/wiki/Help:Magic_words#Miscellaneous)) and with `name` and `content` prepended to `args`.
 ---```lua
 ---    -- These are equivalent
----    frame:extensionTag{ name = 'ref', content = 'some text', args = { name = 'foo', group = 'bar' } }
 ---    frame:extensionTag( 'ref', 'some text', { name = 'foo', group = 'bar' } )
+---    frame:extensionTag{ name = 'ref', content = 'some text', args = { name = 'foo', group = 'bar' } }
 ---
----    frame:callParserFunction{ name = '#tag:ref', args = {
+---    frame:callParserFunction( '#tag', { 'ref' ,
 ---        'some text', name = 'foo', group = 'bar'
----    } }
+---    } )
 ---
 ---    -- These are equivalent
----    frame:extensionTag{ name = 'ref', content = 'some text', args = 'some other text' }
----    frame:callParserFunction{ name = '#tag:ref', args = {
+---    frame:extensionTag{ name = 'ref', content = 'some text', args = { 'some other text' } }
+---    frame:callParserFunction( '#tag', { 'ref',
 ---        'some text', 'some other text'
----    } }
+---    } )
 ---```
 ---@param name string
 ---@param content string
----@param args table
+---@param args { [string]: string }
 ---@return string
----@overload fun(frame: frame, _:{ name: string, content: string, args: table }): string
+---@overload fun(frame: frame, _:{ name: string, content: string, args: { [string]: string } }): string
 function frame:extensionTag ( name, content, args ) end
 
 ---Called on the frame created by `{{#invoke:}}`, returns the frame for the page that called `{{#invoke:}}`. Called on that frame, returns nil.
@@ -162,7 +167,7 @@ function frame:getTitle () end
 ---Create a new Frame object that is a child of the current frame, with optional arguments and title.
 ---
 ---This is mainly intended for use in the debug console for testing functions that would normally be called by `{{#invoke:}}`. The number of frames that may be created at any one time is limited.
----@param _ { title: string, args: table }
+---@param _ { title: string, args: { [string]: string } }
 ---@return frame
 function frame:newChild ( _ ) end
 
@@ -190,7 +195,7 @@ function frame:getArgument ( name ) end
 ---@return expand object An object with one method, `object:expand()`, that returns the result of `frame:preprocess( text )`.
 function frame:newParserValue ( text ) end
 
----@param _ { title: string, args: table }
+---@param _ { title: string, args: { [string]: string } }
 ---@return expand object An object with one method, `object:expand()`, that returns the result of `frame:expandTemplate` called with the given arguments.
 function frame:newTemplateParserValue ( _ ) end
 

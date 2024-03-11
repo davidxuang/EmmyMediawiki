@@ -88,15 +88,25 @@ mw.ustring = {
     ---@return string
     sub = function ( s, i, j ) end,
 
-    ---Converts the string to [Normalization Form C](https://en.wikipedia.org/wiki/Normalization_Form_C).
+    ---Converts the string to [Normalization Form C](https://en.wikipedia.org/wiki/Normalization_Form_C)  (also known as Normalization Form Canonical Composition).
     ---@param s string
     ---@return string? result Nil if the string is not valid UTF-8.
     toNFC = function ( s ) end,
 
-    ---Converts the string to [Normalization Form D](https://en.wikipedia.org/wiki/Normalization_Form_D).
+    ---Converts the string to [Normalization Form D](https://en.wikipedia.org/wiki/Normalization_Form_D) (also known as Normalization Form Canonical Decomposition).
     ---@param s string
     ---@return string? result Nil if the string is not valid UTF-8.
     toNFD = function ( s ) end,
+
+    ---Converts the string to [Normalization Form KC](https://en.wikipedia.org/wiki/Normalization_Form_KC)  (also known as Normalization Form Compatibility Composition).
+    ---@param s string
+    ---@return string? result Nil if the string is not valid UTF-8.
+    toNFKC = function ( s ) end,
+
+    ---Converts the string to [Normalization Form KD](https://en.wikipedia.org/wiki/Normalization_Form_KD) (also known as Normalization Form Compatibility Decomposition).
+    ---@param s string
+    ---@return string? result Nil if the string is not valid UTF-8.
+    toNFKD = function ( s ) end,
 
     ---Much like `string.upper()`, except that all characters with uppercase to lowercase definitions in Unicode are converted.
     ---

@@ -31,9 +31,9 @@ mw.text = {
     ---@return string
     decode = function ( s, decodeNamedEntities ) end,
 
-    ---Replaces characters in a string with [HTML entities](https://en.wikipedia.org/wiki/HTML_entities). Characters '<', '>', '&', '"', and the non-breaking space are replaced with the appropriate named entities; all others are replaced with numeric entities.
+    ---Replaces characters in a string with [HTML entities](https://en.wikipedia.org/wiki/HTML_entities). Five characters are replaced with the appropriate named entities: `<`, `>`, `&`, `"` and the non-breaking space (U+00A0). All others are replaced with numeric entities.
     ---@param s string
-    ---@param charset string? Should be a string as appropriate to go inside brackets in a Ustring pattern, i.e. the "set" in `[set]`. The default charset is '<>&"\\' ' (the space at the end is the non-breaking space, U+00A0).
+    ---@param charset string? Should be a string as appropriate to go inside brackets in a Ustring pattern, i.e. the "set" in `[set]`. The default charset contains six characters: `<`, `>`, `&`, `"`, `'` and the non-breaking space (U+00A0).
     ---@return string
     encode = function ( s, charset ) end,
 
@@ -106,7 +106,7 @@ mw.text = {
     ---@return string
     nowiki = function ( s ) end,
 
-    ---Splits the string into substrings at boundaries matching the Ustring pattern pattern.
+    ---Splits the string into substrings at boundaries matching the Ustring pattern.
     ---@param s string
     ---@param pattern string? If matches the empty string, `s` will be split into individual characters.
     ---@param plain boolean? If specified and true, `pattern` will be interpreted as a literal string rather than as a Lua pattern (just as with the parameter of the same name for `mw.ustring.find()`). For example, `mw.text.split( 'a b\tc\nd', '%s' )` would return a table `{ 'a', 'b', 'c', 'd' }`.

@@ -33,6 +33,8 @@ function html:wikitext ( ... ) end
 function html:newline () end
 
 ---Appends a new child node with the given `tagName` to the builder, and returns a mw.html instance representing that new node. The `args` parameter is identical to that of `mw.html.create`
+---
+---Note that contrarily to other methods such as `html:node()`, this method doesn't return the current mw.html instance, but the mw.html instance of the newly inserted tag. Make sure to use `html:done()` to go up to the parent mw.html instance, or `html:allDone()` if you have nested tags on several levels.
 ---@param tagName string
 ---@param args { selfClosing: boolean, parent: html }?
 ---@return html self

@@ -30,6 +30,8 @@ mw.title = {
     ---Creates a title object with title `title` in namespace `namespace`, optionally with the specified `fragment` and `interwiki` prefix. `namespace` may be any key found in `mw.site.namespaces`. If the resulting title is not valid, returns nil.
     ---
     ---Note that, unlike `mw.title.new()`, this method will always apply the specified namespace. For example, `mw.title.makeTitle( 'Template', 'Module:Foo' )` will create an object for the page Template:Module:Foo, while `mw.title.new( 'Module:Foo', 'Template' )` will create an object for the page Module:Foo.
+    ---
+    ---Note also that functionality for interwiki titles is limited to `interwiki` / `isExternal` / `isLocal` and URL-related methods; other methods might not behave as expected.
     ---@param namespace integer|string
     ---@param title string
     ---@param fragment string?
@@ -50,6 +52,7 @@ mw.title = {
 ---@field fragment string The fragment (aka section/anchor linking), or the empty string. May be assigned.
 ---@field nsText string The text of the namespace for the page.
 ---@field subjectNsText string The text of the subject namespace for the page.
+---@field talkNsText string? The text of the talk namespace for the page, or nil if this title cannot have a talk page. (added in MediaWiki 1.42.0-wmf.15, refs [T180911](https://phabricator.wikimedia.org/T180911))
 ---@field text string The title of the page, without the namespace or interwiki prefixes.
 ---@field prefixedText string The title of the page, with the namespace and interwiki prefixes.
 ---@field fullText string The title of the page, with the namespace and interwiki prefixes and the fragment. Interwiki is not returned if equal to the current.
