@@ -31,39 +31,41 @@ mw.uri = {
     ---
     ---The optional numerical arguments `i` and `j` can be used to specify a substring of `s` to be parsed, rather than the entire string. `i` is the position of the first character of the substring, and defaults to 1. `j` is the position of the last character of the substring, and defaults to the length of the string. Both `i` and `j` can be negative, as in `string.sub`.
     ---@param s string
-    ---@param i integer
-    ---@param j integer
+    ---@param i integer?
+    ---@param j integer?
+    ---@return queryTable queryTable
     parseQueryString = function ( s, i, j ) end,
 
     ---@param page string
     ---@param query (string|queryTable)?
-    ---@return uri uri A URI object for the [canonical URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
+    ---@return Uri uri A URI object for the [canonical URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     canonicalUrl = function ( page, query ) end,
 
     ---@param page string
     ---@param query (string|queryTable)?
-    ---@return uri uri A URI object for the [full URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
+    ---@return Uri uri A URI object for the [full URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     fullUrl = function ( page, query ) end,
 
     ---@param page string
     ---@param query (string|queryTable)?
-    ---@return uri uri A URI object for the [local URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
+    ---@return Uri uri A URI object for the [local URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     localUrl = function ( page, query ) end,
 
     ---@alias uriOptions { protocol: string?, user: string?, password: string?, host: string?, port: integer?, path: string?, query: queryTable?, fragment: string?, userInfo: string?, hostPort: string?, authority: string?, queryString: string?, relativePath: string? }
 
     ---Constructs a new URI object for the passed string or table. See the description of URI objects for the possible fields for the table.
     ---@param s string|uriOptions
-    ---@return uri
+    ---@return Uri
     new = function ( s ) end,
 
     ---Validates the passed table (or URI object).
-    ---@param table queryTable|uri
-    ---@return boolean isValid Whether the table was valid, and on failure a string explaining what problems were found.
+    ---@param table uriOptions|Uri
+    ---@return boolean isValid Whether the table was valid.
+    ---@return string (on failure)explaining what problems were found.
     validate = function ( table ) end,
 }
 
----@class uri
+---@class Uri
 ---@field protocol string? Protocol/scheme
 ---@field user string? User
 ---@field password string? Password
@@ -81,14 +83,14 @@ local uri = {}
 
 ---Parses a string into the current URI object. Any fields specified in the string will be replaced in the current object; fields not specified will keep their old values.
 ---@param s string
----@return uri self
+---@return Uri self
 function uri:parse ( s ) end
 
 ---Makes a copy of the URI object.
----@return uri self
+---@return Uri self
 function uri:clone () end
 
 ---Merges the parameters table into the object's query table.
 ---@param parameters queryTable
----@return uri self
+---@return Uri self
 function uri:extend ( parameters ) end

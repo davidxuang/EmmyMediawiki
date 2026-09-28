@@ -4,7 +4,7 @@
 ---```lua
 ---    local libraryUtil = require( 'libraryUtil' )
 ---```
-libraryUtil = {
+local libraryUtil = {
     ---Raises an error if `type( arg )` does not match `expectType`. In addition, no error will be raised if `arg` is nil and `nilOk` is true.
     ---@param name string The name of the calling function. This is used in formatting the error message.
     ---@param argIdx integer The position of the argument in the argument list. This is used in formatting the error message.
@@ -63,5 +63,8 @@ libraryUtil = {
     ---@param varName string
     ---@param selfObj any
     ---@param selfObjDesc string
+    ---@return fun(self: any, methodName: string)
     makeCheckSelfFunction = function ( libraryName, varName, selfObj, selfObjDesc ) end,
 }
+
+return libraryUtil

@@ -1,6 +1,6 @@
 ---@meta
 
----@class _ustring
+---@class _Ustring
 ---@field maxPatternLength integer The maximum allowed length of a pattern, in bytes.
 ---@field maxStringLength integer The maximum allowed length of a string, in bytes.
 ---[Ustring patterns](https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#Ustring_patterns)
@@ -24,7 +24,7 @@ mw.ustring = {
     ---@param s string
     ---@param i integer?
     ---@param j integer?
-    ---@return integer
+    ---@return integer ...
     codepoint = function ( s, i, j ) end,
 
     ---Much like `string.find()`, except that the pattern is extended as described in Ustring patterns and the init offset is in characters rather than bytes.
@@ -32,8 +32,9 @@ mw.ustring = {
     ---@param pattern string
     ---@param init integer?
     ---@param plain boolean?
-    ---@return integer start
-    ---@return integer end
+    ---@return integer|nil start
+    ---@return integer|nil end
+    ---@return string|integer ... captured
     find = function ( s, pattern, init, plain ) end,
 
     ---Returns three values for iterating over the codepoints in the string. i defaults to 1, and j to -1. This is intended for use in the iterator form of for:
@@ -46,7 +47,7 @@ mw.ustring = {
     ---Much like `string.gmatch()`, except that the pattern is extended as described in Ustring patterns.
     ---@param s string
     ---@param pattern string
-    ---@return fun(): string
+    ---@return fun(): ...: string
     gmatch = function ( s, pattern ) end,
 
     ---Much like `string.gsub()`, except that the pattern is extended as described in Ustring patterns.
@@ -78,7 +79,7 @@ mw.ustring = {
     ---@param s string
     ---@param pattern string
     ---@param init integer?
-    ---@return string? result Nil if the string is not valid UTF-8.
+    ---@return string|integer ...
     match = function ( s, pattern, init ) end,
 
     ---Much like `string.sub()`, except that the offsets are characters rather than bytes.

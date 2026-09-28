@@ -1,6 +1,17 @@
 ---@meta
 
+---@enum LanguageFallbackMode
+local language_fallback_mode = {
+    fallbackMessages = "FALLBACK_MESSAGES",
+    fallbackStrict = "FALLBACK_STRICT"
+}
+
 mw.language = {
+    ---Include the final, implicit fallback to `'en'` (English) for all languages. This is the default behavior.
+    FALLBACK_MESSAGES = language_fallback_mode.fallbackMessages,
+    ---Don’t include this implicit fallback, but only list the explicit fallbacks of the language. (Some languages have an explicit fallback to English, but most do not.)
+    FALLBACK_STRICT = language_fallback_mode.fallbackStrict,
+
     ---The full name of the language for the given language code: native name (language autonym) by default, name translated in target language if a value is given for `inLanguage`.
     ---@param code string
     ---@param inLanguage string?
@@ -13,12 +24,13 @@ mw.language = {
     ---@return { [string]: string } map A table mapping language code to language name.
     fetchLanguageNames = function ( inLanguage, include ) end,
 
-    ---@return lang lang A new language object for the wiki's default content language.
+    ---@return Language lang A new language object for the wiki's default content language.
     getContentLanguage = function () end,
 
     ---@param code string
+    ---@param mode? LanguageFallbackMode
     ---@return string[] list A list of MediaWiki's fallback language codes for the specified code.
-    getFallbacksFor = function ( code ) end,
+    getFallbacksFor = function ( code, mode ) end,
 
     ---A language code is "known" if it is a "valid built-in code" (i.e. it returns true for `mw.language.isValidBuiltInCode`) and returns a non-empty string for `mw.language.fetchLanguageName`.
     ---@param code string
@@ -50,13 +62,13 @@ mw.language = {
 
     ---Creates a new language object. Language objects do not have any publicly accessible properties, but they do have several methods, which are documented below.
     ---
-    ---There is a limit on the number of distinct language codes that may be used on a page. Exceeding this limit will result in errors.
+    ---There is a limit of 200 on the number of distinct language codes that may be used on a page. Exceeding this limit will result in errors.
     ---@param code string
-    ---@return lang
+    ---@return Language
     new = function ( code ) end,
 }
 
----@class lang
+---@class Language
 local lang
 
 ---@return string lang The language code for this language object.
@@ -65,8 +77,9 @@ function lang:getCode () end
 ---@return string lang Returns the standard [BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language code for this language object. This is the code string which is appropriate to use in HTML, for example as the value of a lang attribute.
 function lang:toBcp47Code () end
 
+---@param mode? LanguageFallbackMode
 ---@return string[] list A list of MediaWiki's fallback language codes for this language object. Equivalent to `mw.language.getFallbacksFor( lang:getCode()` ).
-function lang:getFallbackLanguages () end
+function lang:getFallbackLanguages ( mode ) end
 
 ---@return boolean isRTL Whether the language is written right-to-left, false if it is written left-to-right.
 function lang:isRTL () end
@@ -102,7 +115,7 @@ function lang:caseFold ( s ) end
 
 ---Formats a number with grouping and decimal separators appropriate for the given language. Given 123456.78, this may produce "123,456.78", "123.456,78", or even something like "١٢٣٬٤٥٦٫٧٨" depending on the language and wiki configuration.
 ---@param n number
----@param options { noCommafy: boolean }? `noCommafy`: Set true to omit grouping separators and use a dot (`.`) as the decimal separator. Digit transformation may still occur, which may include transforming the decimal separator.
+---@param options { noCommafy?: boolean }? `noCommafy`: Set true to omit grouping separators and use a dot (`.`) as the decimal separator. Digit transformation may still occur, which may include transforming the decimal separator.
 ---@return string
 function lang:formatNum ( n, options ) end
 
@@ -142,7 +155,7 @@ function lang:parseFormattedNumber ( s ) end
 ---@param n number
 ---@param forms string[]
 ---@return string
----@overload fun(n: number, ...: string)
+---@overload fun(self: Language, n: number, ...: string): string
 function lang:convertPlural ( n, forms ) end
 
 lang.plural = lang.convertPlural
@@ -169,7 +182,7 @@ function lang:grammar ( case, word ) end
 ---@param feminine string
 ---@param neutral string
 ---@return string
----@overload fun(what: string, forms: string[])
+---@overload fun(self: Language, what: string, forms: string[]): string
 function lang:gender ( what, masculine, feminine, neutral ) end
 
 ---@param direction 'forwards'|'backwards'|'left'|'right'|'up'|'down' \"forwards" and "backwards" returns either "←" or "→" depending on the directionality of the language.
@@ -190,5 +203,5 @@ function lang:getDirMarkEntity ( opposite ) end
 ---Breaks a duration in seconds into more human-readable units, e.g. 12345 to 3 hours, 25 minutes and 45 seconds, returning the result as a table mapping unit names to numbers.
 ---@param seconds number
 ---@param chosenIntervals ('millennia'|'centuries'|'decades'|'years'|'weeks'|'days'|'hours'|'minutes'|'seconds')[]? if given, is a table with values naming the interval units to use in the response. Those unit keywords are also the keys used in the response table. Only units with a non-zero value are set in the response, unless the response would be empty in which case the smallest unit is returned with a value of 0.
----@return string
+---@return { [string]: number }
 function lang:getDurationIntervals ( seconds, chosenIntervals ) end

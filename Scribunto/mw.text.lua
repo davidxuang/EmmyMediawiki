@@ -1,19 +1,16 @@
 ---@meta
 
----@enum jsonDecodeFlags
+---@enum JsonDecodeFlags
 local json_decode_flags = {
     none = 0,
-    ---Normally JSON's zero-based arrays are renumbered to Lua one-based sequence tables; to prevent this, pass `mw.text.JSON_PRESERVE_KEYS`.
     jsonPreserveKeys = 1,
-    ---To relax certain requirements in JSON, such as no terminal comma in arrays or objects, pass `mw.text.JSON_TRY_FIXING`. This is not recommended.
     jsonTryFixing = 2,
     jsonPreserveKeysAndTryFixing = 3,
 }
 
----@enum jsonEncodeFlags
+---@enum JsonEncodeFlags
 local json_encode_flags = {
     none = 0,
-    ---Normally Lua one-based sequence tables are encoded as JSON zero-based arrays; when `mw.text.JSON_PRESERVE_KEYS` is set, zero-based sequence tables are encoded as JSON arrays.
     jsonPreserveKeys = 1,
     jsonPretty = 4,
     jsonPreserveKeysAndPretty = 5,
@@ -39,17 +36,22 @@ mw.text = {
 
     ---Decodes a JSON string. `flags` is 0 or a combination (use `+`) of the flags `mw.text.JSON_PRESERVE_KEYS` and `mw.text.JSON_TRY_FIXING`.
     ---
+    ---Normally JSON's zero-based arrays are renumbered to Lua one-based sequence tables; to prevent this, pass `mw.text.JSON_PRESERVE_KEYS`.
+    ---To relax certain requirements in JSON, such as no terminal comma in arrays or objects, pass `mw.text.JSON_TRY_FIXING`. This is not recommended.
+    ---
     ---Limitations:
     ---* Decoded JSON arrays may not be Lua sequences if the array contains null values.
     ---* JSON objects will drop keys having null values.
     ---* It is not possible to directly tell whether the input was a JSON array or a JSON object with sequential integer keys.
     ---* A JSON object having sequential integer keys beginning with 1 will decode to the same table structure as a JSON array with the same values, despite these not being at all equivalent, unless `mw.text.JSON_PRESERVE_KEYS` is used.
     ---@param s string
-    ---@param flags jsonDecodeFlags?
-    ---@return string
+    ---@param flags JsonDecodeFlags?
+    ---@return any
     jsonDecode = function ( s, flags ) end,
 
     ---Encode a JSON string. Errors are raised if the passed value cannot be encoded in JSON. `flags` is 0 or a combination (use `+`) of the flags `mw.text.JSON_PRESERVE_KEYS` and `mw.text.JSON_PRETTY`.
+    ---
+    ---Normally Lua one-based sequence tables are encoded as JSON zero-based arrays; when `mw.text.JSON_PRESERVE_KEYS` is set, zero-based sequence tables are encoded as JSON arrays.
     ---
     ---Limitations:
     ---* Empty tables are always encoded as empty arrays (`[]`), not empty objects (`{ }`).
@@ -57,8 +59,8 @@ mw.text = {
     ---* To produce objects or arrays with nil values, a tricky implementation of the `__pairs` metamethod is required.
     ---* A Lua table having sequential integer keys beginning with 0 will encode as a JSON array, the same as a Lua table having integer keys beginning with 1, unless `mw.text.JSON_PRESERVE_KEYS` is used.
     ---* When both a number and the string representation of that number are used as keys in the same table, behavior is unspecified.
-    ---@param value string
-    ---@param flags jsonEncodeFlags?
+    ---@param value any
+    ---@param flags JsonEncodeFlags?
     ---@return string
     jsonEncode = function ( value, flags ) end,
 
@@ -108,11 +110,15 @@ mw.text = {
 
     ---Splits the string into substrings at boundaries matching the Ustring pattern.
     ---@param s string
-    ---@param pattern string? If matches the empty string, `s` will be split into individual characters.
+    ---@param pattern string If matches the empty string, `s` will be split into individual characters.
     ---@param plain boolean? If specified and true, `pattern` will be interpreted as a literal string rather than as a Lua pattern (just as with the parameter of the same name for `mw.ustring.find()`). For example, `mw.text.split( 'a b\tc\nd', '%s' )` would return a table `{ 'a', 'b', 'c', 'd' }`.
     ---@return string[] list table containing the substrings.
     split = function ( s, pattern, plain ) end,
 
+    ---Note that this function can be over 60 times slower than a reimplementation that is not Unicode-aware.
+    ---@param s string
+    ---@param pattern string If matches the empty string, `s` will be split into individual characters.
+    ---@param plain boolean? If specified and true, `pattern` will be interpreted as a literal string rather than as a Lua pattern (just as with the parameter of the same name for `mw.ustring.find()`).
     ---@return fun(): string iterator An iterator function that will iterate over the substrings that would be returned by the equivalent call to `mw.text.split()`.
     gsplit = function ( s, pattern, plain ) end,
 
@@ -123,12 +129,12 @@ mw.text = {
     ---@param attrs { [string]: string|number|boolean }? String and number values are used as the value of the attribute; boolean true results in the key being output as an HTML5 valueless parameter; boolean false skips the key entirely; and anything else is an error.
     ---@param content (string|number|false)? If not given (or is nil), only the opening tag is returned. If boolean false, a self-closed tag is returned. Otherwise must be a string or number, in which case that content is enclosed in the constructed opening and closing tag. Note the content is not automatically HTML-encoded; use `mw.text.encode()` if needed.
     ---@return string
-    ---@overload fun(_: { name: string, attrs: { [string]: string|number|boolean }, content: string|number|false }): string
+    ---@overload fun(_: { name: string, attrs?: { [string]: string|number|boolean }, content?: string|number|false }): string
     tag = function ( name, attrs, content ) end,
 
     ---Remove whitespace or other characters from the beginning and end of a string.
     ---@param s string
-    ---@param charset string? If supplied, it should be a string as appropriate to go inside brackets in a Ustring pattern, i.e. the "set" in `[set]`. The default charset is ASCII whitespace, "\t\r\n\f ".
+    ---@param charset string? If supplied, it should be a string as appropriate to go inside brackets in a Ustring pattern, i.e. the "set" in `[set]`. The default charset is ASCII whitespace, "\t\r\n\f\v ".
     ---@return string
     trim = function ( s, charset ) end,
 
