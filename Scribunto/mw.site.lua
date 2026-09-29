@@ -69,7 +69,7 @@ local talk_namespace = {}
 ---@field aliases string[] List of aliases for the namespace.
 local virtual_namespace = {}
 
----@class _Namespaces: { [string|integer]: _SubjectNamespace|_TalkNamespace|_VirtualNamespace }
+---@class _Namespaces: { [string|integer]: _SubjectNamespace|_TalkNamespace|_VirtualNamespace|nil }
 ---@field [-2] _VirtualNamespace Special
 ---@field [-1] _VirtualNamespace Media
 ---@field [0] _SubjectNamespace Main
@@ -110,12 +110,12 @@ local virtual_namespace = {}
 local namespaces = {}
 
 ---Index should be even positive number.
----@class _ContentNamespaces: { [integer]: _SubjectNamespace }
+---@class _ContentNamespaces: { [integer]: _SubjectNamespace? }
 ---@field [0] _SubjectNamespace Main
 local content_namespaces = {}
 
 ---Index should be even positive number.
----@class _SubjectNamespaces: { [integer]: _SubjectNamespace }
+---@class _SubjectNamespaces: { [integer]: _SubjectNamespace? }
 ---@field [0] _SubjectNamespace Main
 ---@field [2] _SubjectNamespace User
 ---@field [4] _SubjectNamespace Project
@@ -128,7 +128,7 @@ local content_namespaces = {}
 local subject_namespaces = {}
 
 ---Index should be odd positive number.
----@class _TalkNamespaces: { [integer]: _TalkNamespace }
+---@class _TalkNamespaces: { [integer]: _TalkNamespace? }
 ---@field [1] _TalkNamespace Talk
 ---@field [3] _TalkNamespace User Talk
 ---@field [5] _TalkNamespace Project Talk
@@ -186,6 +186,6 @@ local stats = {
     usersInGroup = function ( group ) end,
 }
 
----@param filter ('local'|'!local')?
----@return { [string]: _InterwikiStats } interwikiStats A table holding data about available interwiki prefixes.
+---@param filter 'local'|'!local'|nil
+---@return { [string]: _InterwikiStats? } interwikiStats A table holding data about available interwiki prefixes.
 mw.site.interwikiMap = function ( filter ) end

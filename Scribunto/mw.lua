@@ -84,7 +84,7 @@ local frame = {
     ---For performance reasons, frame.args uses a metatable, rather than directly containing the arguments. Argument values are requested from MediaWiki on demand. This means that most other table methods will not work correctly, including `#frame.args`, `next( frame.args )`, and the functions in the Table library.
     ---
     ---If preprocessor syntax such as template invocations and triple-brace arguments are included within an argument to `#invoke`, they will not be expanded, after being passed to Lua, until their values are being requested in Lua. If certain special tags written in XML notation, such as `<pre>`, `<nowiki>`, `<gallery>` and `<ref>`, are included as arguments to #invoke, then these tags will be converted to "[strip markers](https://www.mediawiki.org/wiki/Strip_marker)" — special strings which begin with a delete character (ASCII 127), to be replaced with HTML after they are returned from #invoke.
-    ---@type { [string|integer]: string }
+    ---@type { [string|integer]: string? }
     args = {}
 }
 
@@ -111,10 +111,10 @@ local frame = {
 ---
 ---Note that, as with `frame:expandTemplate()`, the function name and arguments are not preprocessed before being passed to the parser function.
 ---@param name string
----@param args { [string|integer]: string|number }?
+---@param args { [string|integer]: string|number|nil }?
 ---@return string
 ---@overload fun(frame: Frame, name: string, ...: string|number): string
----@overload fun(frame: Frame, _: { name: string, args: { [string|integer]: string|number } }): string
+---@overload fun(frame: Frame, _: { name: string, args: { [string|integer]: string|number|nil } }): string
 function frame:callParserFunction ( name, args ) end
 
 ---This is transclusion. The call
@@ -131,7 +131,7 @@ function frame:callParserFunction ( name, args ) end
 ---    -- This is roughly equivalent to wikitext like {{template|{{((}}!{{))}}}}
 ---    frame:expandTemplate{ title = 'template', args = { '{{!}}' } }
 ---```
----@param _ { title: string, args: { [string|integer]: string|number } }
+---@param _ { title: string, args: { [string|integer]: string|number|nil } }
 ---@return string
 function frame:expandTemplate ( _ ) end
 
@@ -153,9 +153,9 @@ function frame:expandTemplate ( _ ) end
 ---```
 ---@param name string
 ---@param content string
----@param args string|number|{ [string|integer]: string|number }
+---@param args string|number|{ [string|integer]: string|number|nil }
 ---@return string
----@overload fun(frame: Frame, _:{ name: string, content: string, args: string|number|{ [string|integer]: string|number } }): string
+---@overload fun(frame: Frame, _:{ name: string, content: string, args: string|number|{ [string|integer]: string|number|nil } }): string
 function frame:extensionTag ( name, content, args ) end
 
 ---When this function is called on the frame created by `{{#invoke:}}`, which is either obtained from `mw.getCurrentFrame()` or passed to the function named in the `{{#invoke:}}`, it returns the frame for the page that called `{{#invoke:}}`. This "parent" frame provides access to any parameters, arguments, or other data for that calling page, which is often a template. This remains true regardless of whether this function is called directly from the "main" module invoked by {{#invoke:}} or from library module code accessed via `require()`.
@@ -172,7 +172,7 @@ function frame:getTitle () end
 ---Create a new Frame object that is a child of the current frame, with optional arguments and title.
 ---
 ---This is mainly intended for use in the debug console for testing functions that would normally be called by `{{#invoke:}}`. The number of frames that may be created at any one time is limited.
----@param _ { title?: string, args?: { [string|integer]: string|number } }
+---@param _ { title?: string, args?: { [string|integer]: string|number|nil } }
 ---@return Frame
 function frame:newChild ( _ ) end
 
@@ -202,7 +202,7 @@ function frame:getArgument ( name ) end
 ---@overload fun(self: Frame, _: { text: string }): _Expand
 function frame:newParserValue ( text ) end
 
----@param _ { title: string, args: { [string|integer]: string|number } }
+---@param _ { title: string, args: { [string|integer]: string|number|nil } }
 ---@return _Expand object An object with one method, `object:expand()`, that returns the result of `frame:expandTemplate` called with the given arguments.
 function frame:newTemplateParserValue ( _ ) end
 

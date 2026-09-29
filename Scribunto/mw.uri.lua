@@ -5,13 +5,13 @@ mw.uri = {
     ---
     ---Note that the "WIKI" format is not entirely reversible, as both spaces and underscores are encoded as '_'.
     ---@param s string
-    ---@param enctype ('QUERY'|'PATH'|'WIKI')?
+    ---@param enctype 'QUERY'|'PATH'|'WIKI'|nil
     ---@return string
     encode = function ( s, enctype ) end,
 
     ---Percent-decodes the string. The default type, `"QUERY"`, decodes '+' to space; `"PATH"` does not perform any extra decoding; and `"WIKI"` decodes '_' to space.
     ---@param s string
-    ---@param enctype ('QUERY'|'PATH'|'WIKI')?
+    ---@param enctype 'QUERY'|'PATH'|'WIKI'|nil
     ---@return string
     decode = function ( s, enctype ) end,
 
@@ -20,7 +20,7 @@ mw.uri = {
     ---@return string
     anchorEncode = function ( s ) end,
 
-    ---@alias queryTable { [string]: string|number|(string|number|false)[]|false }
+    ---@alias queryTable { [string]: string|number|(string|number|false)[]|false|nil }
 
     ---Encodes a table as a URI query string. Keys should be strings; values may be strings or numbers, sequence tables, or boolean false.
     ---@param table queryTable
@@ -37,17 +37,17 @@ mw.uri = {
     parseQueryString = function ( s, i, j ) end,
 
     ---@param page string
-    ---@param query (string|queryTable)?
+    ---@param query string|queryTable|nil
     ---@return Uri uri A URI object for the [canonical URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     canonicalUrl = function ( page, query ) end,
 
     ---@param page string
-    ---@param query (string|queryTable)?
+    ---@param query string|queryTable|nil
     ---@return Uri uri A URI object for the [full URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     fullUrl = function ( page, query ) end,
 
     ---@param page string
-    ---@param query (string|queryTable)?
+    ---@param query string|queryTable|nil
     ---@return Uri uri A URI object for the [local URL](https://www.mediawiki.org/wiki/Help:Magic_words#URL_data) for a page
     localUrl = function ( page, query ) end,
 

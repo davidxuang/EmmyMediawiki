@@ -99,7 +99,7 @@ mw.wikibase = {
     ---@return string? propertyId
     resolvePropertyId = function ( propertyLabelOrId ) end,
 
-    ---@return { [string]: integer }? propertyOrder
+    ---@return { [string]: integer? }? propertyOrder
     getPropertyOrder = function () end,
 
     ---@param tableOfPropertyIds string[]
@@ -146,7 +146,7 @@ mw.wikibase = {
 ---@field property string
 ---@field snaktype 'value'|'somevalue'|'novalue'
 
----@alias wikibaseSnaks { [string]: _WikibaseSnak[] }
+---@alias wikibaseSnaks { [string]: _WikibaseSnak[]? }
 
 ---@class _WikibaseReference
 ---@field hash string
@@ -170,11 +170,11 @@ mw.wikibase = {
 ---@field id string
 ---@field type string
 ---@field schemaVersion integer
----@field labels { [string]: _WikibaseTerm }
----@field descriptions { [string]: _WikibaseTerm }
----@field aliases { [string]: _WikibaseTerm[] }
----@field sitelinks { [string]: _WikibaseSitelink }
----@field claims { [string]: _WikibaseStatement[] }
+---@field labels { [string]: _WikibaseTerm? }
+---@field descriptions { [string]: _WikibaseTerm? }
+---@field aliases { [string]: _WikibaseTerm[]? }
+---@field sitelinks { [string]: _WikibaseSitelink? }
+---@field claims { [string]: _WikibaseStatement[]? }
 local wikibase_entity = {}
 
 ---@return string id

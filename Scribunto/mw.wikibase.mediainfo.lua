@@ -73,7 +73,7 @@ mw.wikibase.mediainfo = {
     ---@return string? propertyId
     resolvePropertyId = function ( propertyLabelOrId ) end,
 
-    ---@return { [string]: integer }? propertyOrder
+    ---@return { [string]: integer? }? propertyOrder
     getPropertyOrder = function () end,
 
     ---@param tableOfPropertyIds string[]
@@ -104,10 +104,10 @@ mw.wikibase.mediainfo = {
 ---@field id string
 ---@field type string
 ---@field schemaVersion integer
----@field labels { [string]: _WikibaseTerm }
----@field descriptions { [string]: _WikibaseTerm }
----@field aliases { [string]: _WikibaseTerm[] }
----@field claims { [string]: _WikibaseStatement[] }
+---@field labels { [string]: _WikibaseTerm? }
+---@field descriptions { [string]: _WikibaseTerm? }
+---@field aliases { [string]: _WikibaseTerm[]? }
+---@field claims { [string]: _WikibaseStatement[]? }
 local mediainfo_entity = {}
 
 ---@return string id
@@ -147,12 +147,12 @@ function mediainfo_entity:getBestStatements ( propertyIdOrLabel ) end
 function mediainfo_entity:getAllStatements ( propertyIdOrLabel ) end
 
 ---@param propertyLabelOrId string
----@param acceptableRanks (WikibaseClaimRank[]|WikibaseClaimRank)?
+---@param acceptableRanks WikibaseClaimRank[]|WikibaseClaimRank|nil
 ---@return _WikibaseFormattedStatements result
 function mediainfo_entity:formatPropertyValues ( propertyLabelOrId, acceptableRanks ) end
 
 ---@param propertyLabelOrId string
----@param acceptableRanks (WikibaseClaimRank[]|WikibaseClaimRank)?
+---@param acceptableRanks WikibaseClaimRank[]|WikibaseClaimRank|nil
 ---@return _WikibaseFormattedStatements result
 function mediainfo_entity:formatStatements ( propertyLabelOrId, acceptableRanks ) end
 

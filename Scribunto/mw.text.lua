@@ -126,10 +126,10 @@ mw.text = {
     ---
     ---For properly returning extension tags such as `<ref>`, use `frame:extensionTag()` instead.
     ---@param name string
-    ---@param attrs { [string]: string|number|boolean }? String and number values are used as the value of the attribute; boolean true results in the key being output as an HTML5 valueless parameter; boolean false skips the key entirely; and anything else is an error.
-    ---@param content (string|number|false)? If not given (or is nil), only the opening tag is returned. If boolean false, a self-closed tag is returned. Otherwise must be a string or number, in which case that content is enclosed in the constructed opening and closing tag. Note the content is not automatically HTML-encoded; use `mw.text.encode()` if needed.
+    ---@param attrs { [string]: string|number|boolean|nil }? String and number values are used as the value of the attribute; boolean true results in the key being output as an HTML5 valueless parameter; boolean false skips the key entirely; and anything else is an error.
+    ---@param content string|number|false|nil If not given (or is nil), only the opening tag is returned. If boolean false, a self-closed tag is returned. Otherwise must be a string or number, in which case that content is enclosed in the constructed opening and closing tag. Note the content is not automatically HTML-encoded; use `mw.text.encode()` if needed.
     ---@return string
-    ---@overload fun(_: { name: string, attrs?: { [string]: string|number|boolean }, content?: string|number|false }): string
+    ---@overload fun(_: { name: string, attrs?: { [string]: string|number|boolean|nil }, content?: string|number|false }): string
     tag = function ( name, attrs, content ) end,
 
     ---Remove whitespace or other characters from the beginning and end of a string.

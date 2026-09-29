@@ -31,7 +31,7 @@ mw.title = {
     ---
     ---If a string `text` is given instead, an object is created for that title (even if the page does not exist). If the text string does not specify a namespace, `namespace` (which may be any key found in` mw.site.namespaces`) will be used. If the text is not a valid title, nil is returned.
     ---@param text string
-    ---@param namespace (string|integer)?
+    ---@param namespace string|integer|nil
     ---@return Title? title Creates a new title object.
     ---@overload fun(id: integer): Title?
     new = function ( text, namespace ) end,
@@ -42,7 +42,7 @@ mw.title = {
     ---
     ---This method will return a batch lookup object with two methods: `lookupExistence` and `getTitles`. Calling `lookupExistence()` requests that the batch lookup fills out the `.exists`, `.contentModel`, .`id` and `.isRedirect` fields of the title objects. `getTitles()` will return a table with title objects. Any invalid titles will be nil in the table. Media namespace titles will not have .exists filled out.
     ---@param args string[]
-    ---@param defaultNamespace (string|integer)?
+    ---@param defaultNamespace string|integer|nil
     ---@return _TitleLookup
     newBatch = function ( args, defaultNamespace ) end,
 
@@ -95,13 +95,13 @@ mw.title = {
 ---@field talkPageTitle Title? The same as `mw.title.makeTitle( mw.site.namespaces[title.namespace].talk.id, title.text )`, or nil if this title cannot have a talk page.
 ---@field subjectPageTitle Title The same as `mw.title.makeTitle( mw.site.namespaces[title.namespace].subject.id, title.text )`.
 ---@field redirectTarget Title|false Returns a title object of the target of the redirect page if the page is a redirect and the page exists, returns false otherwise.
----@field protectionLevels { [string]: string[] }? The page's protection levels. This is a table with keys corresponding to each action (e.g., "edit" and "move"). The table values are arrays, the first item of which is a string containing the protection level. If the page is unprotected, either the table values or the array items will be nil. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
----@field cascadingProtection { restrictions: { [string]: string[] }, sources: string[] } The cascading protections applicable to the page. This is a table with keys "restrictions" (itself a table with keys like protectionLevels has) and "sources" (an array listing titles where the protections cascade from). If no protections cascade to the page, "restrictions" and "sources" will be empty. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
+---@field protectionLevels { [string]: string[]? }? The page's protection levels. This is a table with keys corresponding to each action (e.g., "edit" and "move"). The table values are arrays, the first item of which is a string containing the protection level. If the page is unprotected, either the table values or the array items will be nil. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
+---@field cascadingProtection { restrictions: { [string]: string[]? }, sources: string[] } The cascading protections applicable to the page. This is a table with keys "restrictions" (itself a table with keys like protectionLevels has) and "sources" (an array listing titles where the protections cascade from). If no protections cascade to the page, "restrictions" and "sources" will be empty. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
 ---@field categories string[] The list of categories used on the page. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
 ---@field content string? The (unparsed) content of the page, or nil if there is no page. The page will be recorded as a transclusion.
 ---@field pageLang Language A language object for the title's page content language, which defaults to the wiki's content language. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
 ---@field isDisambiguationPage boolean **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
----@field pageAssessments { [string]: { class: string, importance: string } } The names of WikiProjects associated with the page along with their class and importance assessments. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
+---@field pageAssessments { [string]: { class: string, importance: string }? } The names of WikiProjects associated with the page along with their class and importance assessments. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
 ---@field pageImage string The name of the file selected as the image that is shown in search results and related article lists. **This is [expensive](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:$wgExpensiveParserFunctionLimit).**
 local title = {
     ---@param title2 Title
@@ -127,16 +127,16 @@ local title = {
     ---@return string url `title.text` encoded as it would be in a URL.
     partialUrl = function () end,
 
-    ---@param query (string|queryTable)?
-    ---@param proto ('http'|'https'|'relative'|'canonical')? May be specified to control the scheme of the resulting url. The default is "relative".
+    ---@param query string|queryTable|nil
+    ---@param proto 'http'|'https'|'relative'|'canonical'|nil May be specified to control the scheme of the resulting url. The default is "relative".
     ---@return string url The full URL for this title.
     fullUrl = function ( query, proto ) end,
 
-    ---@param query (string|queryTable)?
+    ---@param query string|queryTable|nil
     ---@return string url The local URL for this title.
     localUrl = function ( query ) end,
 
-    ---@param query (string|queryTable)?
+    ---@param query string|queryTable|nil
     ---@return string url The canonical URL for this title.
     canonicalUrl = function ( query ) end,
 

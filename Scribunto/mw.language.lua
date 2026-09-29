@@ -21,7 +21,7 @@ mw.language = {
     ---Fetch the list of languages known to MediaWiki.
     ---@param inLanguage string? By default the name returned is the language autonym; passing a language code returns all names in that language.
     ---@param include 'all'|'mwfile'|'mw'? By default, only language names known to MediaWiki are returned; passing `'all'` will return all available languages (e.g. from [Extension:CLDR](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:CLDR)), while passing `'mwfile'` will include only languages having customized messages included with MediaWiki core or enabled extensions. To explicitly select the default, `'mw'` may be passed.
-    ---@return { [string]: string } map A table mapping language code to language name.
+    ---@return { [string]: string? } map A table mapping language code to language name.
     fetchLanguageNames = function ( inLanguage, include ) end,
 
     ---@return Language lang A new language object for the wiki's default content language.
@@ -203,5 +203,5 @@ function lang:getDirMarkEntity ( opposite ) end
 ---Breaks a duration in seconds into more human-readable units, e.g. 12345 to 3 hours, 25 minutes and 45 seconds, returning the result as a table mapping unit names to numbers.
 ---@param seconds number
 ---@param chosenIntervals ('millennia'|'centuries'|'decades'|'years'|'weeks'|'days'|'hours'|'minutes'|'seconds')[]? if given, is a table with values naming the interval units to use in the response. Those unit keywords are also the keys used in the response table. Only units with a non-zero value are set in the response, unless the response would be empty in which case the smallest unit is returned with a value of 0.
----@return { [string]: number }
+---@return { [string]: number? }
 function lang:getDurationIntervals ( seconds, chosenIntervals ) end
