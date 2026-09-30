@@ -1,4 +1,4 @@
----@meta
+---@meta Module:TableTools
 
 local p = {}
 

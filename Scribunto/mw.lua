@@ -114,7 +114,7 @@ local frame = {
 ---@param args { [string|integer]: string|number|nil }?
 ---@return string
 ---@overload fun(frame: Frame, name: string, ...: string|number): string
----@overload fun(frame: Frame, _: { name: string, args: { [string|integer]: string|number|nil } }): string
+---@overload fun(frame: Frame, _: { name: string, args?: { [string|integer]: string|number|nil } }): string
 function frame:callParserFunction ( name, args ) end
 
 ---This is transclusion. The call
@@ -131,7 +131,7 @@ function frame:callParserFunction ( name, args ) end
 ---    -- This is roughly equivalent to wikitext like {{template|{{((}}!{{))}}}}
 ---    frame:expandTemplate{ title = 'template', args = { '{{!}}' } }
 ---```
----@param _ { title: string, args: { [string|integer]: string|number|nil } }
+---@param _ { title: string, args?: { [string|integer]: string|number|nil } }
 ---@return string
 function frame:expandTemplate ( _ ) end
 
@@ -153,9 +153,9 @@ function frame:expandTemplate ( _ ) end
 ---```
 ---@param name string
 ---@param content string
----@param args string|number|{ [string|integer]: string|number|nil }
+---@param args string|number|nil|{ [string|integer]: string|number|nil }
 ---@return string
----@overload fun(frame: Frame, _:{ name: string, content: string, args: string|number|{ [string|integer]: string|number|nil } }): string
+---@overload fun(frame: Frame, _:{ name: string, content: string, args?: string|number|{ [string|integer]: string|number|nil } }): string
 function frame:extensionTag ( name, content, args ) end
 
 ---When this function is called on the frame created by `{{#invoke:}}`, which is either obtained from `mw.getCurrentFrame()` or passed to the function named in the `{{#invoke:}}`, it returns the frame for the page that called `{{#invoke:}}`. This "parent" frame provides access to any parameters, arguments, or other data for that calling page, which is often a template. This remains true regardless of whether this function is called directly from the "main" module invoked by {{#invoke:}} or from library module code accessed via `require()`.

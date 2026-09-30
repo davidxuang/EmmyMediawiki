@@ -1,4 +1,4 @@
----@meta
+---@meta Module:Yesno
 
 ---@generic T
 ---@param val any
